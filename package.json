@@ -1,7 +1,7 @@
 {
-  "name": "social-sso-app,
+  "name": "social-sso-app",
   "version": "1.0.0",
-  "author":kohei,
+  "author": "kohei",
   "scripts": {
     "start": "node ./src/bin/www"
   },
