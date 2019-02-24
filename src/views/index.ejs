@@ -2,10 +2,43 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta
+      name="google-signin-client_id"
+      content="74841733833-910fp6rau08bc84u88m87ku9a3kk2uvi.apps.googleusercontent.com"
+    />
+    <script>
+      function onSignIn(googleUser) {
+        var id_token = googleUser.getAuthResponse().id_token;
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId());
+        console.log("Name: " + profile.getName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail());
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/tokensignin");
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onload = function() {
+          console.log("Server returned: " + xhr.responseText);
+        };
+        xhr.send("idtoken=" + id_token);
+      }
+      function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function() {
+          console.log("User signed out.");
+        });
+      }
+    </script>
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <p>Welcome</p>
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <br />
+    <a href="/" onclick="signOut();">SignOut</a>
+    <br />
+    <a href="<%= google_url %>" class="pop-button">SignIn Using Redirect</a>
   </body>
 </html>

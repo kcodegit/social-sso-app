@@ -1,0 +1,7 @@
+{
+  "google": {
+    "client_id": "74841733833-910fp6rau08bc84u88m87ku9a3kk2uvi.apps.googleusercontent.com",
+    "client_secret": "nmhE0xt3gEr-y887MpTXe4xX",
+    "redirect_uri": "http://localhost:3000/google-callback"
+  }
+}
