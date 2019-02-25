@@ -1,70 +1,70 @@
-import { OAuth2Client } from "google-auth-library";
-import { google } from "googleapis";
-import config from "config";
-const userinfoUrl = "https://www.googleapis.com/oauth2/v1/userinfo?alt=json";
+/**
+ * Goolgle APIs Auth Module
+ * reference: https://googleapis.github.io/google-auth-library-nodejs/
+ * github: https://github.com/googleapis/google-auth-library-nodejs
 
-const CONF = {
-  clientId: config.google.client_id,
-  clientSecret: config.google.client_secret,
-  redirect: config.google.redirect_uri
-};
-
-const scope = ["https://www.googleapis.com/auth/plus.me", "https://www.googleapis.com/auth/userinfo.email"];
-/** PRIVATE **/
+ */
+import { OAuth2Client } from 'google-auth-library';
+import config from 'config';
+const p = console.log;
+/** APIs Explorer for OAuth2 v1: https://developers.google.com/apis-explorer/#p/oauth2/v1/ **/
+const infoUrl = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=JSON';
 
 /**
- * returns the OAuth2 Client
+ * information scope needed
+ * reference: https://developers.google.com/identity/protocols/googlescopes
+ * check: Google OAuth2 API, v2
+ */
+const scope = ['https://www.googleapis.com/auth/userinfo.email'];
+
+/** PRIVATE **/
+/**
+ * this establishes the connection
  * @return { OAuth2Client }
  */
-function getClient() {
-  return new OAuth2Client(CONF.clientId, CONF.clientSecret, CONF.redirect);
+function getOAuth2Client() {
+  return new OAuth2Client(config.google.CLIENT_ID, config.google.CLIENT_SECRET, config.google.REDIRECT);
 }
 
 /**
- * returns the auth url
+ * get the url for sso link
  * @param { OAuth2Client } client
  * @return { string }
  */
-function getAuthUrl(client) {
+function getConnectionUrl(client) {
   return client.generateAuthUrl({
-    access_type: "offline",
-    prompt: "consent",
+    access_type: 'offline',
+    prompt: 'consent',
     scope: scope
   });
 }
 
-function getGooglePlusApi(client) {
-  return google.plus({ version: "v1", client });
-}
-
 /** PUBLIC **/
-
 /**
- * returns the auth url
+ * sso url
  * @return { string }
  */
 function googleUrl() {
-  return getAuthUrl(getClient());
+  return getConnectionUrl(getOAuth2Client());
 }
 
 /**
- * get user data
- * @param { string }
- * @return { Object }
+ * get selected fields of userinfo
+ * @param { string } code
+ * @return { object }
  */
 async function getUserInfoFromCode(code) {
-  const client = getClient();
+  const client = getOAuth2Client();
   const data = await client.getToken(code);
   client.setCredentials(data.tokens);
-  const plus = getGooglePlusApi(client);
-  const me = await plus.people.get({ userId: "me" });
-  const userGoogleId = me.data.id;
-  const userGoogleEmail = me.data.emails && me.data.emails.length && me.data.emails[0].value;
+  const userinfo = await client.request({ url: infoUrl });
+  p('userinfo', JSON.stringify(userinfo, null, 2));
+
   return {
-    access_token: data.tokens.access_token,
-    id: userGoogleId,
-    email: userGoogleEmail
+    uuid: userinfo.data.id,
+    email: userinfo.data.email,
+    access_token: data.tokens.access_token
   };
 }
 
-export { googleUrl, getUserInfoFromCode };
+export default { googleUrl, getUserInfoFromCode };
