@@ -23,7 +23,7 @@ const scope = ['https://www.googleapis.com/auth/userinfo.email'];
  * @return { OAuth2Client }
  */
 function getOAuth2Client() {
-  return new OAuth2Client(config.google.CLIENT_ID, config.google.CLIENT_SECRET, config.google.REDIRECT);
+  return new OAuth2Client(config.google.clientId, config.google.clientSecret, config.google.redirectUri);
 }
 
 /**
@@ -63,8 +63,41 @@ async function getUserInfoFromCode(code) {
   return {
     uuid: userinfo.data.id,
     email: userinfo.data.email,
-    access_token: data.tokens.access_token
+    accessToken: data.tokens.access_token
   };
 }
 
-export default { googleUrl, getUserInfoFromCode };
+/**
+ * fetch the fresh info with token
+ * @param { string } token
+ */
+async function getUserInfoWithToken(token) {
+  const client = getOAuth2Client();
+  client.setCredentials({ access_token: token });
+  const userinfo = await client.request({ url: infoUrl });
+  // p('userinfo', JSON.stringify(userinfo, null, 2));
+
+  return {
+    uuid: userinfo.data.id,
+    email: userinfo.data.email,
+    accessToken: token
+  };
+}
+
+/**
+ * fetch the fresh info with token
+ * @param { string } token
+ */
+async function verifyToken(token) {
+  const client = getOAuth2Client();
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: config.google.clientId
+  });
+  const payload = ticket.getPayload();
+  p('payload', JSON.stringify(payload, null, 2));
+
+  return {};
+}
+
+export { googleUrl, getUserInfoFromCode };

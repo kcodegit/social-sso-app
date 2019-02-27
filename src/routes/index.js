@@ -1,27 +1,38 @@
-var express = require("express");
-var router = express.Router();
-import { googleUrl, getUserInfoFromCode } from "../drivers/google/google_client";
+import express from 'express';
+import { googleUrl, getUserInfoFromCode } from '../drivers/google/googleApi';
+const router = express.Router();
+const p = console.log;
 
 /* GET home page. */
-router.get("/", function(req, res, next) {
-  res.render("index", { title: "Login", google_url: googleUrl() });
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Login', googleUrl: googleUrl() });
 });
 
 /**
  * this is for the google sso button ajax data
  */
-router.post("/tokensignin", function(req, res, next) {
-  res.send("no code returned");
+router.post('/tokensignin', function(req, res, next) {
+  const token = req.body.idtoken;
+  if (token) {
+    p('token', token);
+    res.send('token passed!!');
+  } else {
+    res.send('no token');
+  }
 });
 
 /**
  * this is for the google sso callback
  */
-router.get("/google-callback", function(req, res, next) {
+router.get('/google-callback', function(req, res, next) {
   if (req.query.code) {
-    getUserInfoFromCode(req.query.code).then(info => res.json(info));
+    try {
+      getUserInfoFromCode(req.query.code).then(info => res.json(info));
+    } catch (e) {
+      p(e);
+    }
   } else {
-    res.send("no code returned");
+    res.send('no code returned');
   }
 });
 

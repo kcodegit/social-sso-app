@@ -3,3 +3,6 @@ node_modules/
 .env
 *.log
 build/
+.ash_history 
+.node_repl_history
+db_data
