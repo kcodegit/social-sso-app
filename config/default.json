@@ -18,8 +18,8 @@
     "cert": ""
   },
   "google": {
-    "clientId": "74841733833-910fp6rau08bc84u88m87ku9a3kk2uvi.apps.googleusercontent.com",
-    "clientSecret": "nmhE0xt3gEr-y887MpTXe4xX",
+    "clientId": "CLIENT_ID",
+    "clientSecret": "CLIENT_SECRET",
     "redirectUri": "http://localhost:3000/google-callback"
   }
 }
