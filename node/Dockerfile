@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-COPY . /home/app
+COPY ./node /home/app
 
 WORKDIR /home/app
 

@@ -4,14 +4,14 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./dockerfiles/node/Dockerfile
+      dockerfile: ./node/Dockerfile
     container_name: node_app
     ports:
       - '3000:3000'
       - '9229:9229'
-    env_file: .env
+    env_file: ./node/.env
     volumes:
-      - .:/home/app
+      - ./node:/home/app
       - /home/app/node_modules
     tty: true
     depends_on:
@@ -20,7 +20,9 @@ services:
       - mynetwork
 
   mysql:
-    image: mysql:5.7
+    build:
+      context: .
+      dockerfile: ./mysql/Dockerfile
     container_name: mysql
     restart: always
     ports:

@@ -16,6 +16,7 @@
         console.log('Name: ' + profile.getName());
         console.log('Image URL: ' + profile.getImageUrl());
         console.log('Email: ' + profile.getEmail());
+        // verification
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/tokensignin');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

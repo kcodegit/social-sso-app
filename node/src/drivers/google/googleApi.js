@@ -2,7 +2,6 @@
  * Goolgle APIs Auth Module
  * reference: https://googleapis.github.io/google-auth-library-nodejs/
  * github: https://github.com/googleapis/google-auth-library-nodejs
-
  */
 import { OAuth2Client } from 'google-auth-library';
 import config from 'config';
@@ -27,7 +26,7 @@ function getOAuth2Client() {
 }
 
 /**
- * get the url for sso link
+ * get the url for sign-in link
  * @param { OAuth2Client } client
  * @return { string }
  */
@@ -41,7 +40,6 @@ function getConnectionUrl(client) {
 
 /** PUBLIC **/
 /**
- * sso url
  * @return { string }
  */
 function googleUrl() {
