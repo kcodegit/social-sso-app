@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "prod": "node ./build/bin/www",
-    "dev": "nodemon ./build/bin/www --ignore src/",
+    "dev": "DEBUG=app:*,debug:* nodemon ./build/bin/www --ignore src/",
     "clean": "rm -rf build",
     "build": "babel src -d build --ignore src/node_modules --copy-files",
     "watch_build": "babel --watch src -d build --ignore src/node_modules --copy-files",
@@ -13,6 +13,7 @@
     "test": "NODE_ENV='development' mocha --recursive"
   },
   "dependencies": {
+    "bcrypt": "^3.0.4",
     "config": "^3.0.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
