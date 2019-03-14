@@ -6,7 +6,7 @@ WORKDIR /home/app
 
 # add some dependencies for bcrypt
 RUN apk --update --no-cache add --virtual .buildDep python gcc g++ make \
-    && yarn global add node-gyp
+  && yarn global add node-gyp
 
 RUN yarn install
 

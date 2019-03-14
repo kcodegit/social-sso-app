@@ -11,6 +11,6 @@ log.log = console.log.bind(console);
 const logE = debug('app:error');
 
 // initialize with __filename
-const logD = filename => debug('debug:' + filename.slice('/').pop());
+const logD: Function = (filename: string) => debug('debug:' + filename.split('/').pop());
 
 export { log, logE, logD };

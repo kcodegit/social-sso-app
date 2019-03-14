@@ -4,15 +4,21 @@
   "author": "kohei",
   "license": "MIT",
   "scripts": {
-    "prod": "node ./build/bin/www",
+    "start": "node ./build/bin/www",
     "dev": "DEBUG=app:*,debug:* nodemon ./build/bin/www --ignore src/",
-    "clean": "rm -rf build",
-    "build": "babel src -d build --ignore src/node_modules --copy-files",
-    "watch_build": "babel --watch src -d build --ignore src/node_modules --copy-files",
+    "clean": "rm -rf build && rm -rf types",
+    "type-check": "tsc --noEmit",
+    "build": "yarn build:types && yarn build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src -d build --extensions \".js,.ts,.tsx\" --source-maps inline --copy-files",
+    "watch_build": "babel --watch src -d build --extensions \".js,.ts,.tsx\" --source-maps inline --copy-files",
     "clean_build": "yarn clean && yarn build",
     "test": "NODE_ENV='development' mocha --recursive"
   },
   "dependencies": {
+    "@types/config": "^0.0.34",
+    "@types/debug": "^4.1.2",
+    "@types/node": "^11.11.3",
     "bcrypt": "^3.0.4",
     "config": "^3.0.1",
     "cookie-parser": "~1.4.3",
@@ -24,12 +30,16 @@
     "morgan": "~1.9.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-typescript": "^7.1.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "mocha": "^6.0.1",
-    "nodemon": "^1.18.10"
+    "nodemon": "^1.18.10",
+    "typescript": "^3.2.2"
   }
 }

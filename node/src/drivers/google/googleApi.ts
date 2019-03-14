@@ -4,7 +4,10 @@
  * github: https://github.com/googleapis/google-auth-library-nodejs
  */
 import { OAuth2Client } from 'google-auth-library';
-import config from 'config';
+import { ConfigSchema } from '../../config/ConfigSchema';
+import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
+import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
+const config: ConfigSchema = require('config');
 const p = console.log;
 /** APIs Explorer for OAuth2 v1: https://developers.google.com/apis-explorer/#p/oauth2/v1/ **/
 const infoUrl = 'https://www.googleapis.com/oauth2/v1/userinfo?alt=JSON';
@@ -21,7 +24,7 @@ const scope = ['https://www.googleapis.com/auth/userinfo.email'];
  * this establishes the connection
  * @return { OAuth2Client }
  */
-function getOAuth2Client() {
+function getOAuth2Client(): OAuth2Client {
   return new OAuth2Client(config.google.clientId, config.google.clientSecret, config.google.redirectUri);
 }
 
@@ -30,11 +33,11 @@ function getOAuth2Client() {
  * @param { OAuth2Client } client
  * @return { string }
  */
-function getConnectionUrl(client) {
+function getConnectionUrl(client: OAuth2Client): string {
   return client.generateAuthUrl({
     access_type: 'offline',
     prompt: 'consent',
-    scope: scope
+    scope: scope,
   });
 }
 
@@ -42,7 +45,7 @@ function getConnectionUrl(client) {
 /**
  * @return { string }
  */
-function googleUrl() {
+function googleUrl(): string {
   return getConnectionUrl(getOAuth2Client());
 }
 
@@ -51,17 +54,17 @@ function googleUrl() {
  * @param { string } code
  * @return { object }
  */
-async function getUserInfoFromCode(code) {
+async function getUserInfoFromCode(code: string): Promise<Object> {
   const client = getOAuth2Client();
-  const data = await client.getToken(code);
+  const data: GetTokenResponse = await client.getToken(code);
   client.setCredentials(data.tokens);
-  const userinfo = await client.request({ url: infoUrl });
+  const userinfo: GoogleDataResponse = await client.request({ url: infoUrl });
   // p('userinfo', JSON.stringify(userinfo, null, 2));
 
   return {
     uuid: userinfo.data.id,
     email: userinfo.data.email,
-    accessToken: data.tokens.access_token
+    accessToken: data.tokens.access_token,
   };
 }
 
@@ -69,16 +72,16 @@ async function getUserInfoFromCode(code) {
  * fetch the fresh info with token
  * @param { string } token
  */
-async function getUserInfoWithAccessToken(token) {
+async function getUserInfoWithAccessToken(token: string): Promise<Object> {
   const client = getOAuth2Client();
   client.setCredentials({ access_token: token });
-  const userinfo = await client.request({ url: infoUrl });
+  const userinfo: GoogleDataResponse = await client.request({ url: infoUrl });
   // p('userinfo', JSON.stringify(userinfo, null, 2));
 
   return {
     uuid: userinfo.data.id,
     email: userinfo.data.email,
-    accessToken: token
+    accessToken: token,
   };
 }
 
@@ -86,21 +89,25 @@ async function getUserInfoWithAccessToken(token) {
  * fetch the fresh info with token
  * @param { string } token
  */
-async function verifyIdToken(token) {
+async function verifyIdToken(token: string): Promise<string | null> {
+  let id: string | null = null;
   try {
     const client = getOAuth2Client();
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: config.google.clientId
+      audience: config.google.clientId,
     });
     const payload = ticket.getPayload();
     // p('payload', JSON.stringify(payload, null, 2));
-    const id = payload.sub;
-    return id;
+
+    id = payload ? payload.sub : null;
   } catch (e) {
     p(e);
-    return null;
+  } finally {
+    return id;
   }
 }
+
+type GoogleDataResponse = { data: { id: string; email: string } };
 
 export { googleUrl, getUserInfoFromCode, getUserInfoWithAccessToken, verifyIdToken };

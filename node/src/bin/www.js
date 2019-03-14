@@ -4,12 +4,13 @@
 import { log, logE, logD } from '../commons/util/logger';
 import app from '../app';
 import http from 'http';
+import config from 'config';
 
 /**
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(config.server.port || '3000');
 app.set('port', port);
 
 /**
@@ -22,7 +23,7 @@ const server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port, config.server.host);
 server.on('error', onError);
 server.on('listening', onListening);
 

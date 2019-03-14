@@ -7,12 +7,12 @@ services:
       dockerfile: ./node/Dockerfile
     container_name: node_app
     ports:
-      - '3000:3000'
-      - '9229:9229'
+      - '3002:3000'
+      - '9231:9229'
     env_file: ./node/.env
     volumes:
       - ./node:/home/app
-      - /home/app/node_modules
+      # - /home/app/node_modules
     tty: true
     depends_on:
       - mysql

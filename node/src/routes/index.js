@@ -1,6 +1,7 @@
 import express from 'express';
 import config from 'config';
 import { googleUrl, getUserInfoFromCode, verifyIdToken } from '../drivers/google/googleApi';
+import { User } from '../model/user/User';
 const router = express.Router();
 const p = console.log;
 
