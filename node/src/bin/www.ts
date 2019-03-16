@@ -2,9 +2,11 @@
  * Module dependencies.
  */
 import { log, logE, logD } from '../commons/util/logger';
+// @ts-ignore
 import app from '../app';
 import http from 'http';
-import config from 'config';
+import { ConfigSchema } from '../commons/customTypes/config/ConfigSchema';
+const config: ConfigSchema = require('config');
 
 /**
  * Get port from environment and store in Express.
@@ -23,7 +25,7 @@ const server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port, config.server.host);
+server.listen(port, config.server.baseUri);
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -31,7 +33,7 @@ server.on('listening', onListening);
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val) {
+function normalizePort(val: any) {
   var port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -50,7 +52,7 @@ function normalizePort(val) {
 /**
  * Event listener for HTTP server "error" event.
  */
-
+//@ts-ignore
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
@@ -79,6 +81,6 @@ function onError(error) {
 
 function onListening() {
   const addr = server.address();
-  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr!.port;
   log('Listening on', bind);
 }

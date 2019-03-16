@@ -4,7 +4,7 @@
  * github: https://github.com/googleapis/google-auth-library-nodejs
  */
 import { OAuth2Client } from 'google-auth-library';
-import { ConfigSchema } from '../../config/ConfigSchema';
+import { ConfigSchema } from '../../commons/customTypes/config/ConfigSchema';
 import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
 import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
 const config: ConfigSchema = require('config');
@@ -54,7 +54,7 @@ function googleUrl(): string {
  * @param { string } code
  * @return { object }
  */
-async function getUserInfoFromCode(code: string): Promise<Object> {
+async function getUserInfoFromCode(code: string): Promise<object> {
   const client = getOAuth2Client();
   const data: GetTokenResponse = await client.getToken(code);
   client.setCredentials(data.tokens);
@@ -72,7 +72,7 @@ async function getUserInfoFromCode(code: string): Promise<Object> {
  * fetch the fresh info with token
  * @param { string } token
  */
-async function getUserInfoWithAccessToken(token: string): Promise<Object> {
+async function getUserInfoWithAccessToken(token: string): Promise<object> {
   const client = getOAuth2Client();
   client.setCredentials({ access_token: token });
   const userinfo: GoogleDataResponse = await client.request({ url: infoUrl });
